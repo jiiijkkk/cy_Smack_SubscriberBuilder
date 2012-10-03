@@ -37,13 +37,19 @@ public class Account100 {
 		System.out.println( account_number + " accounts created!" );
 		
 		pause();
-		
+
 		System.out.println("Building " +
 				this.account_number + "*" + this.admin_number + "=" +
 				this.account_number * this.admin_number +
 				" friendships...");
 		this.core.createFriendships();
 		System.out.println( account_number + " friendships built!");
+		
+		pause();
+		
+		System.out.println("Creating " + this.account_number + " listeners");
+		this.core.createListeners();
+		System.out.println( account_number + " listener created!");
 		
 		pause();
 		
