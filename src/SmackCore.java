@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ public class SmackCore {
 	private int account_number;
 	private int admin_number;
 	private String name_prefix;
+	private BufferedWriter out;
 	private List<Connection> conns = new ArrayList<Connection>();
 	private List<subscriptionListener> listeners = new ArrayList<subscriptionListener>();
 	
@@ -43,7 +47,7 @@ public class SmackCore {
 				try {
 					conn_tmp.getAccountManager().createAccount( name_prefix + i , name_prefix );
 				} catch (XMPPException e_create) {
-					System.out.println( "Warning : test " + i + " is existed!" );
+					System.out.println( "Warning : test" + i + " is existed!" );
 				}
 				try {
 					conn_tmp.login( this.name_prefix + i , this.name_prefix );
@@ -56,21 +60,31 @@ public class SmackCore {
 		}
 	}
 	public void createListeners(){
-		System.out.println(this.conns.size());
+		
+		FileWriter fstream = null;
+		try {
+			fstream = new FileWriter("logs.txt");
+		} catch (IOException e) {
+			System.err.println("Warning : creating file error!");
+		}
+		this.out = new BufferedWriter(fstream);
+		
 		for ( Connection conn_tmp : this.conns ){
-			subscriptionListener thisSubscriptionListener = new subscriptionListener(conn_tmp);
+			subscriptionListener thisSubscriptionListener = new subscriptionListener(conn_tmp, this.out);
 			thisSubscriptionListener.addRosterListener();
 			this.listeners.add(thisSubscriptionListener);
 		}
+		
 	}
 	public void createFriendships(){
-		for ( Connection conn_tmp : this.conns ){
+		for ( subscriptionListener thisSubscriptionListener : this.listeners ){
 			int i = 0;
 			for ( ; i < this.admin_number ; i++ ){
 				try {
-					conn_tmp.getRoster().createEntry( "admin"+i+"@vopenfire" , "admin"+i , null);
+					thisSubscriptionListener.getConnection().getRoster().createEntry( "admin"+i+"@vopenfire" , "admin"+i , null);
+					thisSubscriptionListener.setStartTime();
 				} catch (XMPPException e) {
-					System.out.println( "Warning : " + conn_tmp.getUser() + " adding admin " + i + " fail!" );
+					System.out.println( "Warning : " + thisSubscriptionListener.getConnection().getUser() + " adding admin" + i + " fail!" );
 				}
 			}
 		}
@@ -90,6 +104,13 @@ public class SmackCore {
 	public void disconnectListeners(){
 		for ( Connection conn_tmp : this.conns ){
 			conn_tmp.disconnect();
+		}
+		
+		//Close the output stream
+		try {
+			out.close();
+		} catch (IOException e) {
+			System.err.println("Warning : endding file error!");
 		}
 	}
 }

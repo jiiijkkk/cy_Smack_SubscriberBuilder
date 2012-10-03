@@ -34,14 +34,12 @@ public class Account100 {
 		this.core.createAccounts();
 		System.out.println( account_number + " accounts created!" );
 		
-		pause();
-		
 		System.out.println("Creating " + this.account_number + " listeners");
 		this.core.createListeners();
 		System.out.println( account_number + " listener created!");
 		
 		pause();
-
+		
 		System.out.println("Building " +
 				this.account_number + "*" + this.admin_number + "=" +
 				this.account_number * this.admin_number +
@@ -60,8 +58,6 @@ public class Account100 {
 		System.out.println("Disconnecting " + this.account_number + " friendships..." );
 		this.core.disconnectListeners();
 		System.out.println( account_number + " friendships disconnected!");
-		
-		pause();
 		
 		System.out.println("Exit!");
 	}
