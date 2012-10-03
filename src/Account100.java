@@ -1,10 +1,7 @@
-import java.io.IOException;
 import java.util.Scanner;
 
-
-
 public class Account100 {
-	private static String domain = "192.168.200.16";
+	private static String domain = "192.168.200.10";
 	private int account_number;
 	private int admin_number;
 	private static String name_prefix = "test";
@@ -17,6 +14,7 @@ public class Account100 {
 	}
 	public void run(){
 
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.print("Tester number : ");
@@ -37,6 +35,12 @@ public class Account100 {
 		System.out.println( account_number + " accounts created!" );
 		
 		pause();
+		
+		System.out.println("Creating " + this.account_number + " listeners");
+		this.core.createListeners();
+		System.out.println( account_number + " listener created!");
+		
+		pause();
 
 		System.out.println("Building " +
 				this.account_number + "*" + this.admin_number + "=" +
@@ -47,9 +51,9 @@ public class Account100 {
 		
 		pause();
 		
-		System.out.println("Creating " + this.account_number + " listeners");
-		this.core.createListeners();
-		System.out.println( account_number + " listener created!");
+		System.out.println("Deleting " + this.account_number + " accounts..." );
+		this.core.removeAccounts();
+		System.out.println( account_number + " accounts deleted!");
 		
 		pause();
 		
@@ -57,13 +61,14 @@ public class Account100 {
 		this.core.disconnectListeners();
 		System.out.println( account_number + " friendships disconnected!");
 		
+		pause();
+		
 		System.out.println("Exit!");
 	}
 	public static void pause(){
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Press the enter key to continue");
+		scanner.nextLine();
 	}
 }
